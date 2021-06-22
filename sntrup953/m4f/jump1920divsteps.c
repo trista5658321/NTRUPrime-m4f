@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "cmsis.h"
-
+#include "ntt42.h"
 extern int jump1024divsteps(int minusdelta, int32_t *M, int32_t *f, int32_t *g);
 extern int jump896divsteps(int minusdelta, int32_t *M, int32_t *f, int32_t *g);
 void gf_polymul_960x960(int32_t *h, int32_t *f, int32_t *g);
@@ -18,7 +18,13 @@ static inline int barrett_16x2i(int X) {
   int32_t SH = __SMULBT(q,QH);
   return(__SSUB16(X,__PKHBT(SL,SH,16)));
 }
-
+void gf_polymul_960x960_1(int32_t *h, int32_t *f, int32_t *g){
+    int fpad[1008], gpad[1008];
+    ntt2016_953(fpad, f);
+    ntt2016_953(gpad, g);
+    basemul_2016(fpad, fpad, gpad);
+    intt2016_1906(h, fpad);
+}
 void gf_polymul_960x960_2x2_x_2x2 (int32_t *M, int32_t *M1, int32_t *M2){ //only v = g^-1 mod f
     int i;
     int32_t T, *X, *Y, *Z;
@@ -27,8 +33,8 @@ void gf_polymul_960x960_2x2_x_2x2 (int32_t *M, int32_t *M1, int32_t *M2){ //only
     B1920[0] = 0;
     B1920_1[1] = 0;
 
-    gf_polymul_960x960(BB1920, M2, M1); // x * u2 * v1 
-    gf_polymul_960x960(B1920_1, M2+480,M1+512); // v2 * s1
+    gf_polymul_960x960_1(BB1920, M2, M1); // x * u2 * v1 
+    gf_polymul_960x960_1(B1920_1, M2+480,M1+512); // v2 * s1
 
     for (i=500, X=M, Y=B1920, Z=B1920_1; i>0; i--) {	// v = x u2 v1 + v2 s1
         T = barrett_16x2i(__SADD16((*Z++),*(Y++)));
