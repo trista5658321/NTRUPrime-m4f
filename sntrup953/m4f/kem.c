@@ -34,14 +34,14 @@ static int int16_nonzero_mask(int16 x)
 #endif
 
 /* return -1 if x<0; otherwise return 0 */
-static int int16_negative_mask(int16 x)
-{
-  uint16 u = x;
-  u >>= 15;
-  return -(int) u;
-  /* alternative with gcc -fwrapv: */
-  /* x>>15 compiles to CPU's arithmetic right shift */
-}
+// static int int16_negative_mask(int16 x)
+// {
+//   uint16 u = x;
+//   u >>= 15;
+//   return -(int) u;
+//   /* alternative with gcc -fwrapv: */
+//   /* x>>15 compiles to CPU's arithmetic right shift */
+// }
 
 /* ----- arithmetic mod 3 */
 
@@ -75,17 +75,17 @@ static Fq Fq_freeze(int32 x)
 
 #ifndef LPR
 
-static Fq Fq_recip(Fq a1)
-{
-  int i = 1;
-  Fq ai = a1;
+// static Fq Fq_recip(Fq a1)
+// {
+//   int i = 1;
+//   Fq ai = a1;
 
-  while (i < q-2) {
-    ai = Fq_freeze(a1*(int32)ai);
-    i += 1;
-  }
-  return ai;
-}
+//   while (i < q-2) {
+//     ai = Fq_freeze(a1*(int32)ai);
+//     i += 1;
+//   }
+//   return ai;
+// }
 
 #endif
 
@@ -170,48 +170,48 @@ static void R3_mult(small *h,const small *f,const small *g)
 }
 
 /* returns 0 if recip succeeded; else -1 */
-static int R3_recip(small *out,const small *in)
-{
-  small f[p+1],g[p+1],v[p+1],r[p+1];
-  int i,loop,delta;
-  int sign,swap,t;
+// static int R3_recip(small *out,const small *in)
+// {
+//   small f[p+1],g[p+1],v[p+1],r[p+1];
+//   int i,loop,delta;
+//   int sign,swap,t;
 
-  for (i = 0;i < p+1;++i) v[i] = 0;
-  for (i = 0;i < p+1;++i) r[i] = 0;
-  r[0] = 1;
-  for (i = 0;i < p;++i) f[i] = 0;
-  f[0] = 1; f[p-1] = f[p] = -1;
-  for (i = 0;i < p;++i) g[p-1-i] = in[i];
-  g[p] = 0;
+//   for (i = 0;i < p+1;++i) v[i] = 0;
+//   for (i = 0;i < p+1;++i) r[i] = 0;
+//   r[0] = 1;
+//   for (i = 0;i < p;++i) f[i] = 0;
+//   f[0] = 1; f[p-1] = f[p] = -1;
+//   for (i = 0;i < p;++i) g[p-1-i] = in[i];
+//   g[p] = 0;
 
-  delta = 1;
+//   delta = 1;
 
-  for (loop = 0;loop < 2*p-1;++loop) {
-    for (i = p;i > 0;--i) v[i] = v[i-1];
-    v[0] = 0;
+//   for (loop = 0;loop < 2*p-1;++loop) {
+//     for (i = p;i > 0;--i) v[i] = v[i-1];
+//     v[0] = 0;
 
-    sign = -g[0]*f[0];
-    swap = int16_negative_mask(-delta) & int16_nonzero_mask(g[0]);
-    delta ^= swap&(delta^-delta);
-    delta += 1;
+//     sign = -g[0]*f[0];
+//     swap = int16_negative_mask(-delta) & int16_nonzero_mask(g[0]);
+//     delta ^= swap&(delta^-delta);
+//     delta += 1;
 
-    for (i = 0;i < p+1;++i) {
-      t = swap&(f[i]^g[i]); f[i] ^= t; g[i] ^= t;
-      t = swap&(v[i]^r[i]); v[i] ^= t; r[i] ^= t;
-    }
+//     for (i = 0;i < p+1;++i) {
+//       t = swap&(f[i]^g[i]); f[i] ^= t; g[i] ^= t;
+//       t = swap&(v[i]^r[i]); v[i] ^= t; r[i] ^= t;
+//     }
 
-    for (i = 0;i < p+1;++i) g[i] = F3_freeze(g[i]+sign*f[i]);
-    for (i = 0;i < p+1;++i) r[i] = F3_freeze(r[i]+sign*v[i]);
+//     for (i = 0;i < p+1;++i) g[i] = F3_freeze(g[i]+sign*f[i]);
+//     for (i = 0;i < p+1;++i) r[i] = F3_freeze(r[i]+sign*v[i]);
 
-    for (i = 0;i < p;++i) g[i] = g[i+1];
-    g[p] = 0;
-  }
+//     for (i = 0;i < p;++i) g[i] = g[i+1];
+//     g[p] = 0;
+//   }
 
-  sign = f[0];
-  for (i = 0;i < p;++i) out[i] = sign*v[p-1-i];
+//   sign = f[0];
+//   for (i = 0;i < p;++i) out[i] = sign*v[p-1-i];
 
-  return int16_nonzero_mask(delta);
-}
+//   return int16_nonzero_mask(delta);
+// }
 
 #endif
 
@@ -260,51 +260,51 @@ static void Rq_mult3(Fq *h,const Fq *f)
 
 /* out = 1/(3*in) in Rq */
 /* returns 0 if recip succeeded; else -1 */
-static int Rq_recip3(Fq *out,const small *in)
-{
-  Fq f[p+1],g[p+1],v[p+1],r[p+1];
-  int i,loop,delta;
-  int swap,t;
-  int32 f0,g0;
-  Fq scale;
+// static int Rq_recip3(Fq *out,const small *in)
+// {
+//   Fq f[p+1],g[p+1],v[p+1],r[p+1];
+//   int i,loop,delta;
+//   int swap,t;
+//   int32 f0,g0;
+//   Fq scale;
 
-  for (i = 0;i < p+1;++i) v[i] = 0;
-  for (i = 0;i < p+1;++i) r[i] = 0;
-  r[0] = Fq_recip(3);
-  for (i = 0;i < p;++i) f[i] = 0;
-  f[0] = 1; f[p-1] = f[p] = -1;
-  for (i = 0;i < p;++i) g[p-1-i] = in[i];
-  g[p] = 0;
+//   for (i = 0;i < p+1;++i) v[i] = 0;
+//   for (i = 0;i < p+1;++i) r[i] = 0;
+//   r[0] = Fq_recip(3);
+//   for (i = 0;i < p;++i) f[i] = 0;
+//   f[0] = 1; f[p-1] = f[p] = -1;
+//   for (i = 0;i < p;++i) g[p-1-i] = in[i];
+//   g[p] = 0;
 
-  delta = 1;
+//   delta = 1;
 
-  for (loop = 0;loop < 2*p-1;++loop) {
-    for (i = p;i > 0;--i) v[i] = v[i-1];
-    v[0] = 0;
+//   for (loop = 0;loop < 2*p-1;++loop) {
+//     for (i = p;i > 0;--i) v[i] = v[i-1];
+//     v[0] = 0;
 
-    swap = int16_negative_mask(-delta) & int16_nonzero_mask(g[0]);
-    delta ^= swap&(delta^-delta);
-    delta += 1;
+//     swap = int16_negative_mask(-delta) & int16_nonzero_mask(g[0]);
+//     delta ^= swap&(delta^-delta);
+//     delta += 1;
 
-    for (i = 0;i < p+1;++i) {
-      t = swap&(f[i]^g[i]); f[i] ^= t; g[i] ^= t;
-      t = swap&(v[i]^r[i]); v[i] ^= t; r[i] ^= t;
-    }
+//     for (i = 0;i < p+1;++i) {
+//       t = swap&(f[i]^g[i]); f[i] ^= t; g[i] ^= t;
+//       t = swap&(v[i]^r[i]); v[i] ^= t; r[i] ^= t;
+//     }
 
-    f0 = f[0];
-    g0 = g[0];
-    for (i = 0;i < p+1;++i) g[i] = Fq_freeze(f0*g[i]-g0*f[i]);
-    for (i = 0;i < p+1;++i) r[i] = Fq_freeze(f0*r[i]-g0*v[i]);
+//     f0 = f[0];
+//     g0 = g[0];
+//     for (i = 0;i < p+1;++i) g[i] = Fq_freeze(f0*g[i]-g0*f[i]);
+//     for (i = 0;i < p+1;++i) r[i] = Fq_freeze(f0*r[i]-g0*v[i]);
 
-    for (i = 0;i < p;++i) g[i] = g[i+1];
-    g[p] = 0;
-  }
+//     for (i = 0;i < p;++i) g[i] = g[i+1];
+//     g[p] = 0;
+//   }
 
-  scale = Fq_recip(f[0]);
-  for (i = 0;i < p;++i) out[i] = Fq_freeze(scale*(int32)v[p-1-i]);
+//   scale = Fq_recip(f[0]);
+//   for (i = 0;i < p;++i) out[i] = Fq_freeze(scale*(int32)v[p-1-i]);
 
-  return int16_nonzero_mask(delta);
-}
+//   return int16_nonzero_mask(delta);
+// }
 
 #endif
 

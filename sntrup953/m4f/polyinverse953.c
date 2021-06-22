@@ -2,7 +2,7 @@
 #include "cmsis.h"
 #include "bred_int.h"
 
-extern int jump1920divsteps(int minusdelta, int32_t* M, int32_t* f, int32_t* g);
+extern int jump1920divsteps(int minusdelta, int *M, int *f, int *g);
 int Rq_recip3_jumpdivsteps(int16_t* H, int8_t* G);
 
 #define q 6343
@@ -49,7 +49,7 @@ int Rq_recip3_jumpdivsteps(int16_t* H, int8_t* G){
     f[953]=-1;
     for(i=0;i<953;i++) g[i] = (int16_t)G[952-i];
 
-    minusdelta = jump1920divsteps(minusdelta, (int32_t *)M, (int32_t *)f, (int32_t *)g);
+    minusdelta = jump1920divsteps(minusdelta, (int *)M, (int *)f, (int *)g);
 
     k=pow6341(M[0]*3);
 
