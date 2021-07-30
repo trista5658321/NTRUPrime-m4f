@@ -283,7 +283,7 @@ wpad:
     .word 4163374430
 @ [1, 2, 4, 8, 3, 6, 12, 11, 9, 5, 10, 7]
 @ [6, 3, 8, 4, 2, 1, 7, 10, 5, 9, 11, 12]
-.equ basesize, 8
+.equ basesize, 7
 .global intt24
 .type intt24, %function
 intt24:
@@ -291,7 +291,8 @@ intt24:
     adr.w lr, wpad
     ldm lr!, {r11-r12}
     vmov s0, s1, r0, lr
-    add.w r10, r0, #312*basesize*2
+    add.w r10, r0, #156*basesize*2
+    add.w r10, r10, #156*basesize*2
     vmov s2, r10
 intt2:
     ldr.w r9, [lr], #4
@@ -309,6 +310,20 @@ intt2:
     str.w r4, [r0, #1*basesize*2]
     str.w r3, [r0], #4
 .endr
+    ldrh.w r1, [r0]
+    ldrh.w r2, [r0, #14]
+    sadd16 r3, r1, r2
+    ssub16 r4, r1, r2
+    smulbb r5, r9, r4
+    smmulr r6, r5, r11
+    mls r4, r6, r12, r5
+    sbfx r1, r3, #0, #16
+    smmulr r6, r1, r11
+    mls r3, r6, r12, r1
+    @ coef_multiply_w_16bitx2_wbot r4, r4, r9, r11, r12, r5, r6
+    strh.w r4, [r0, #14]
+    strh.w r3, [r0], #2
+
     add.w r0, r0, #1*basesize*2
     cmp.w r0, r10
     bne.w intt2

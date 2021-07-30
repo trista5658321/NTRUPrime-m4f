@@ -3,7 +3,7 @@
 extern void mask1013(int*, int*);
 extern void ntt13_rader(int*, int*);
 extern void ntt24(int*);
-extern void basemul_8x8_312(int*, int*, int*);
+extern void basemul_7x7_312(int*, int*, int*);
 extern void intt24(int*);
 extern void intt13_rader(int*, int*);
 extern void imask2026(int*, int*);
@@ -42,9 +42,9 @@ extern void intt12_for312(int*);
 extern void intt12_for624(int*);
 extern void intt12_for1248(int*);
 
-void ntt2496_1013(int*, int*);
-void basemul_2496(int*, int*, int*);
-void intt2496_2026(int*, int*);
+void ntt2184_1013(int*, int*);
+void basemul_2184(int*, int*, int*);
+void intt2184_2026(int*, int*);
 
 void ntt312_128(int*, int*);
 void ntt312_128x(int*, int*);

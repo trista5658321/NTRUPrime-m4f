@@ -127,7 +127,7 @@ static void R3_fromRq(small *out,const Fq *r)
 }
 
 extern void copy_p_F3_mod3(small *, small *, small *, small *);
-extern void gf_polymul_768x768_mod3(small *, small *, small *);
+extern void gf_polymul_704x704_mod3(small *, small *, small *);
 extern void reduce_2p_minus1_mod3_F3(small *, small *);
 /* h = f*g in the ring R3 */
 static void R3_mult(small *h,const small *f,const small *g)
@@ -155,15 +155,14 @@ static void R3_mult(small *h,const small *f,const small *g)
 
   for (i = 0;i < p;++i) h[i] = fg[i];
 #else
-  small fg[1536];
-  small f_mod3[768];
-  small g_mod3[768];
+  small fg[1408];
+  small f_mod3[704];
+  small g_mod3[704];
   int i;
-  for(i=660;i<768;++i)f_mod3[i]=g_mod3[i]=0;
+  for(i=660;i<704;++i)f_mod3[i]=g_mod3[i]=0;
   copy_p_F3_mod3(f, f_mod3, g, g_mod3);
-  gf_polymul_768x768_mod3(fg, f_mod3, g_mod3);
+  gf_polymul_704x704_mod3(fg, f_mod3, g_mod3);
   reduce_2p_minus1_mod3_F3(h, fg); 
-  // polymul_653x653_mod3(h,f,g);
 #endif
 }
 

@@ -3,28 +3,28 @@
 .syntax unified
 .text
 wpad:
-    .word 598435
-    .word 7177
-    .word 102956256
-    .word 4188801388
-    .word 163446317
-    .word 4123326554
-    .word 130347753
-    .word 232649632
+    .word 545116
+    .word 7879
+    .word 51708063
+    .word 4162974992
+    .word 215479008
+    .word 4284875989
+    .word 121436061
+    .word 38275167
 
 @ [1, 2, 4, 8, 3, 6, 12, 11, 9, 5, 10, 7]
 @ [6, 3, 8, 4, 2, 1, 7, 10, 5, 9, 11, 12]
-.equ basesize, 168
-.global ntt13_rader
-.type ntt13_rader, %function
-ntt13_rader:
+.equ basesize, 96
+.global ntt13_rader_1248
+.type ntt13_rader_1248, %function
+ntt13_rader_1248:
     push {r4-r11, lr}
     adr.w lr, wpad
     vldm lr, {s3-s10}
     vmov s0, s1, r0, r1
     add.w lr, r0, #2*basesize
     vmov s2, lr
-ntt13_rader_crt:
+ntt13_rader_1248_crt:
     @ ldr.w r4, [r1, #1*basesize*2]
     @ ldr.w r5, [r1, #2*basesize*2]
     @ ldr.w r6, [r1, #4*basesize*2]
@@ -72,17 +72,19 @@ ntt13_rader_crt:
     str.w r3, [r0, #4*basesize*2]
     str.w r4, [r0, #2*basesize*2]
     str.w r5, [r0, #5*basesize*2]
-    str.w r7, [r0, #7*basesize*2]
-    str.w r8, [r0, #10*basesize*2]
-    str.w r9, [r0, #8*basesize*2]
-    add.w r0, r0, #10*basesize*2
-    str.w r10, [r0, #1*basesize*2]
-    sub.w r0, r0, #10*basesize*2
+    add.w r0, r0, #6*basesize*2
+    str.w r7, [r0, #1*basesize*2]
+    str.w r8, [r0, #4*basesize*2]
+    str.w r9, [r0, #2*basesize*2]
+    str.w r10, [r0, #5*basesize*2]
+    sub.w r0, r0, #6*basesize*2
 
     ldr.w r4, [r1, #3*basesize*2]
     ldr.w r5, [r1, #6*basesize*2]
-    ldr.w r6, [r1, #10*basesize*2]
-    ldr.w r7, [r1, #7*basesize*2]
+    add.w r1, r1, #6*basesize*2
+    ldr.w r6, [r1, #4*basesize*2]
+    ldr.w r7, [r1, #1*basesize*2]
+    sub.w r1, r1, #6*basesize*2
 
     crt16x2 r3, r4, r6
     crt16x2 r4, r5, r7
@@ -118,13 +120,13 @@ ntt13_rader_crt:
     add.w r1, r1, #4
     str.w r2, [r0], #4
     cmp.w r0, lr
-    bne.w ntt13_rader_crt
+    bne.w ntt13_rader_1248_crt
 
     vmov r0, s0
     vmov r11, r12, s3, s4
     vmov r1, r2, s5, s6
     vmov r3, s7
-ntt13_rader_polymul_6x6_pos:
+ntt13_rader_1248_polymul_6x6_pos:
     ldr.w r5, [r0, #1*basesize*2]
     ldr.w r6, [r0, #2*basesize*2]
     ldr.w r7, [r0, #3*basesize*2]
@@ -163,12 +165,12 @@ ntt13_rader_polymul_6x6_pos:
 
     add.w r0, r0, #4
     cmp.w r0, lr
-    bne.w ntt13_rader_polymul_6x6_pos
+    bne.w ntt13_rader_1248_polymul_6x6_pos
 
     vmov r0, s0
     vmov r1, r2, s8, s9
     vmov r3, s10
-ntt13_rader_polymul_6x6_neg:
+ntt13_rader_1248_polymul_6x6_neg:
     ldr.w r5, [r0, #7*basesize*2]
     ldr.w r6, [r0, #8*basesize*2]
     ldr.w r7, [r0, #9*basesize*2]
@@ -227,11 +229,11 @@ ntt13_rader_polymul_6x6_neg:
 
     add.w r0, r0, #4
     cmp.w r0, lr
-    bne.w ntt13_rader_polymul_6x6_neg
+    bne.w ntt13_rader_1248_polymul_6x6_neg
 
 @ [6, 3, 8, 4, 2, 1, 7, 10, 5, 9, 11, 12]
     vmov r0, r1, s0, s1
-ntt13_rader_crt_output:
+ntt13_rader_1248_crt_output:
     @ ldr.w r2, [r1], #4
     @ ldr.w r5, [r0, #1*basesize*2]
     @ ldr.w r6, [r0, #4*basesize*2]
@@ -247,12 +249,12 @@ ntt13_rader_crt_output:
     ldr.w r6, [r0, #4*basesize*2]
     ldr.w r7, [r0, #2*basesize*2]
     ldr.w r8, [r0, #5*basesize*2]
-    ldr.w r9, [r0, #7*basesize*2]
-    ldr.w r10, [r0, #10*basesize*2]
-    ldr.w r11, [r0, #8*basesize*2]
-    add.w r0, r0, #10*basesize*2
-    ldr.w r12, [r0, #1*basesize*2]
-    sub.w r0, r0, #10*basesize*2
+    add.w r0, r0, #6*basesize*2
+    ldr.w r9, [r0, #1*basesize*2]
+    ldr.w r10, [r0, #4*basesize*2]
+    ldr.w r11, [r0, #2*basesize*2]
+    ldr.w r12, [r0, #5*basesize*2]
+    sub.w r0, r0, #6*basesize*2
 
     pack16x2 r4, r5, r6
     pack16x2 r6, r7, r8
@@ -275,8 +277,10 @@ ntt13_rader_crt_output:
 
     str.w r5, [r0, #8*basesize*2]
     str.w r6, [r0, #4*basesize*2]
-    str.w r8, [r0, #7*basesize*2]
-    str.w r9, [r0, #10*basesize*2]
+    add.w r0, r0, #6*basesize*2
+    str.w r8, [r0, #1*basesize*2]
+    str.w r9, [r0, #4*basesize*2]
+    sub.w r0, r0, #6*basesize*2
     str.w r10, [r0, #5*basesize*2]
     
     @ ldr.w r7, [r0, #3*basesize*2]
@@ -323,7 +327,7 @@ ntt13_rader_crt_output:
     str.w r3, [r0], #4
 
     cmp.w r0, lr
-    bne.w ntt13_rader_crt_output
+    bne.w ntt13_rader_1248_crt_output
 
 
     pop {r4-r11, pc}

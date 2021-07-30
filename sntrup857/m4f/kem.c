@@ -126,7 +126,7 @@ static void R3_fromRq(small *out,const Fq *r)
 }
 
 extern void copy_p_F3_mod3(small *, small *, small *, small *);
-extern void gf_polymul_1024x1024_mod3(small *, small *, small *);
+extern void gf_polymul_896x896_mod3(small *, small *, small *);
 extern void reduce_2p_minus1_mod3_F3(small *, small *);
 /* h = f*g in the ring R3 */
 static void R3_mult(small *h,const small *f,const small *g)
@@ -154,17 +154,14 @@ static void R3_mult(small *h,const small *f,const small *g)
 
   for (i = 0;i < p;++i) h[i] = fg[i];
 #else
-  small fg[2048];
-  small f_mod3[1024];
-  small g_mod3[1024];
+  small fg[1892];
+  small f_mod3[896];
+  small g_mod3[896];
   int i;
-  for(i=857;i<1024;++i)f_mod3[i]=g_mod3[i]=0;
+  for(i=857;i<896;++i)f_mod3[i]=g_mod3[i]=0;
   copy_p_F3_mod3(f, f_mod3, g, g_mod3);
-  gf_polymul_1024x1024_mod3(fg, f_mod3, g_mod3);
+  gf_polymul_896x896_mod3(fg, f_mod3, g_mod3);
   reduce_2p_minus1_mod3_F3(h, fg); 
-  // int16_t qaq[857];
-  // byteToShort_857(qaq, f);
-  // polymul_857x857_mod3(h,qaq,g);
 #endif
 }
 

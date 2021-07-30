@@ -86,19 +86,19 @@ void intt1248_1024x(int* h, int* fpad){
   imask1024x_1248(h, tmp);
 }
 
-void ntt2496_1013(int* fpad, int* f){
-  int tmp[1248];
+void ntt2184_1013(int* fpad, int* f){
+  int tmp[1092];
   mask1013(tmp, f);
   ntt13_rader(fpad, f);
   ntt24(fpad);
 }
 
-void basemul_2496(int* h, int* f, int* g){
-  basemul_8x8_312(h, f, g);
+void basemul_2184(int* h, int* f, int* g){
+  basemul_7x7_312(h, f, g);
 }
 
-void intt2496_2026(int* h, int* fpad){
-  int tmp[1248];
+void intt2184_2026(int* h, int* fpad){
+  int tmp[1092];
   intt24(fpad);
   intt13_rader(tmp, fpad);
   imask2026(h, tmp);

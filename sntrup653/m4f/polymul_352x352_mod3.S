@@ -1,17 +1,17 @@
 .p2align	2,,3	
 .syntax		unified
 .text
-.equ size, 1280
-.global gf_polymul_1280x1280_mod3
-.type	gf_polymul_1280x1280_mod3, %function
-gf_polymul_1280x1280_mod3:
+.equ size, 352
+.global gf_polymul_352x352_mod3
+.type	gf_polymul_352x352_mod3, %function
+gf_polymul_352x352_mod3:
     push.w {r3-r12, lr}
-    vmov.w s2, r0
+    vmov.w s0, r0
     sub.w sp, sp, #4*size
     mov.w r0, sp
     mov.w r12, #0x03030303
     add.w lr, r0, #1*size/2
-gf_polymul_1280x1280_mod3_extend:
+gf_polymul_352x352_mod3_extend:
     ldr.w r4, [r1, #4]
     ldr.w r5, [r1, #1*size/2]
     ldr.w r6, [r1, #1*size/2+4]
@@ -37,23 +37,23 @@ gf_polymul_1280x1280_mod3_extend:
     str.w r8, [r0, #1*size/2+4]
     str.w r3, [r0], #8
     cmp.w r0, lr
-    bne.w gf_polymul_1280x1280_mod3_extend
+    bne.w gf_polymul_352x352_mod3_extend
     add.w r0, r0, #1*size/2
     sub.w r1, r1, #1*size/2
     sub.w r2, r2, #1*size/2
     mov.w r4, r0
     mov.w r5, r1
     mov.w r6, r2
-    bl.w gf_polymul_640x640_mod3 @ a0*b0
+    bl.w gf_polymul_176x176_mod3 @ a0*b0
     add.w r0, r4, #1*size
     add.w r1, r5, #1*size/2
     add.w r2, r6, #1*size/2
-    bl.w gf_polymul_640x640_mod3 @ a1*b1
+    bl.w gf_polymul_176x176_mod3 @ a1*b1
     add.w r0, r4, #1*size*2
     sub.w r1, r4, #1*size
     sub.w r2, r4, #1*size/2
-    bl.w gf_polymul_640x640_mod3 @ (a0+a1)*(b0+b1)
-    vmov r0, s2 @ h
+    bl.w gf_polymul_176x176_mod3 @ (a0+a1)*(b0+b1)
+    vmov r0, s0 @ h
     mov.w r1, r4
     add.w lr, r1, #1*size/2
 @ (a0+a1)(b0+b1)x + (1-x)(a0b0-a1b1x)
@@ -63,7 +63,7 @@ gf_polymul_1280x1280_mod3_extend:
 @                  a1b1bot  a1b1top
 @         aabbbot  aabbtop
     mov.w r12, #0x03030303
-gf_polymul_1280x1280_mod3_output:
+gf_polymul_352x352_mod3_output:
     ldr.w r3, [r1, #1*size/2] @ a0b0 top
     ldr.w r4, [r1, #2*size/2] @ a1b1 bot
     ldr.w r5, [r1, #3*size/2] @ a1b1 top
@@ -94,6 +94,6 @@ gf_polymul_1280x1280_mod3_output:
     str.w r6, [r0, #1*size/2]
     str.w r2, [r0], #4
     cmp.w r1, lr
-    bne.w gf_polymul_1280x1280_mod3_output
+    bne.w gf_polymul_352x352_mod3_output
     add.w sp, sp, #4*size
     pop.w {r3-r12, pc}

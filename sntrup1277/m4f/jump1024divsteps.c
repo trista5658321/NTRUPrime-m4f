@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "cmsis.h"
-
+#include "ntt78.h"
 extern void gf_polymul_512x512(int *h, int *f, int *g);
 extern int jump512divsteps(int minusdelta, int *M, int *f, int *g);
 void gf_polymul_512x512_2x2_x2p2 (int *V,int *M,int *fh,int *gh);
@@ -90,3 +90,135 @@ int jump1024divsteps(int minusdelta, int *M, int *f, int *g){
   gf_polymul_512x512_2x2_x_2x2(M+1024, M1+512, M2+512);
   return(minusdelta);
 }
+
+// int jump1024divsteps(int minusdelta, int *M, int *f, int *g){
+//   int M1[1536], M2[1536], fg[1024];
+//   int u1[624], v1[624], r1[624], s1[624], fh[624], gh[624], tmp[624], tmp2[624];
+//   int u2[624], v2[624], r2[624], s2[624];
+//   fg[0] = M[0] = 0;
+//   int i, T, *X, *Y, *W;
+
+//   minusdelta = jump512divsteps(minusdelta, M1, f, g);
+
+//   ntt1248_512x(u1, M1+512);
+//   ntt1248_512x(v1, M1+768);
+//   ntt1248_512(r1, M1+1024);
+//   ntt1248_512(s1, M1+1280);
+//   ntt1248_512(fh, f+256);
+//   ntt1248_512(gh, g+256);
+
+//   basemul_1248(tmp, u1, fh);
+//   basemul_1248(tmp2, v1, gh);
+//   for(X=tmp, Y=tmp2, i=624;i>0;--i){
+//       T = barrett_16x2i(__SADD16(*(Y++),*X));
+//       // T = __SADD16(*(Y++),*X);
+//       *(X++) = T;
+//   }
+//   intt1248_1024(fg, tmp);
+//   for (X=fg, W=M1, i=256; i>0; i--) {// x(u fh+v gh)+f1
+//     T = barrett_16x2i(__SADD16(*(W++),*X)); *(X++) = T;
+//   }
+//   for(i=256;i>0;--i){
+//     T = barrett_16x2i(*X); *(X++) = T;
+//   }
+
+//   basemul_1248(tmp, r1, fh);
+//   basemul_1248(tmp2, s1, gh);
+//   for(X=tmp, Y=tmp2, i=624;i>0;--i){
+//       T = barrett_16x2i(__SADD16(*(Y++),*X));
+//       // T = __SADD16(*(Y++),*X);
+//       *(X++) = T;
+//   }
+//   intt1248_1024(fg+512, tmp);
+//   for (X = fg+512, i=256; i>0; i--) {	// (r fh+s gh) + g1
+//     T = barrett_16x2i(__SADD16(*(W++),*X)); *(X++) = T;
+//   } 
+//   for(i=256;i>0;--i){
+//     T = barrett_16x2i(*X); *(X++) = T;
+//   }
+
+//   minusdelta = jump512divsteps(minusdelta, M2, fg, fg+512);
+
+//   ntt1248_512x(u2, M2+512);
+//   ntt1248_512x(v2, M2+768);
+//   ntt1248_512(r2, M2+1024);
+//   ntt1248_512(s2, M2+1280);
+//   ntt1248_512(fh, fg+256);
+//   ntt1248_512(gh, fg+768);
+
+//   basemul_1248(tmp, u2, fh);
+//   basemul_1248(tmp2, v2, gh);
+//   for(X=tmp, Y=tmp2, i=624;i>0;--i){
+//       T = barrett_16x2i(__SADD16(*(Y++),*X));
+//       // T = __SADD16(*(Y++),*X);
+//       *(X++) = T;
+//   }
+//   intt1248_1024(M, tmp);
+//   for (X=M, W=M2, i=256; i>0; i--) {// x(u fh+v gh)+f1
+//     T = barrett_16x2i(__SADD16(*(W++),*X)); *(X++) = T;
+//   }  
+//   for(i=256;i>0;--i){
+//     T = barrett_16x2i(*X); *(X++) = T;
+//   }
+
+//   basemul_1248(tmp, r2, fh);
+//   basemul_1248(tmp2, s2, gh);
+//   for(X=tmp, Y=tmp2, i=624;i>0;--i){
+//       T = barrett_16x2i(__SADD16(*(Y++),*X));
+//       // T = __SADD16(*(Y++),*X);
+//       *(X++) = T;
+//   }
+//   intt1248_1024(M+512, tmp);
+//   for (X = M+512, i=256; i>0; i--) {	// x(r fh+s gh) + g1
+//     T = barrett_16x2i(__SADD16(*(W++),*X)); *(X++) = T;
+//   } 
+//   for(i=256;i>0;--i){
+//     T = barrett_16x2i(*X); *(X++) = T;
+//   }
+
+//   basemul_1248(tmp, u2, u1);
+//   basemul_1248(tmp2, v2, r1);
+//   for(X=tmp, Y=tmp2, i=624;i>0;--i){
+//       T = barrett_16x2i(__SADD16(*(Y++),*X));
+//       *(X++) = T;
+//   }
+//   intt1248_1024x(M+1024, tmp);
+//   for (i=512, X=M+1024 ; i>0; i--) {	// u = x u2 u1 + v2 r1
+//     T = barrett_16x2i(*X); *(X++) = T;
+//   }
+
+//   basemul_1248(tmp, u2, v1);
+//   basemul_1248(tmp2, v2, s1);
+//   for(X=tmp, Y=tmp2, i=624;i>0;--i){
+//       T = barrett_16x2i(__SADD16(*(Y++),*X));
+//       *(X++) = T;
+//   }
+//   intt1248_1024x(M+1536, tmp);
+//   for (i=512, X=M+1536 ; i>0; i--) {
+//     T = barrett_16x2i(*X); *(X++) = T;
+//   }
+
+//   basemul_1248(tmp, r2, u1);
+//   basemul_1248(tmp2, s2, r1);
+//   for(X=tmp, Y=tmp2, i=624;i>0;--i){
+//       T = barrett_16x2i(__SADD16(*(Y++),*X));
+//       *(X++) = T;
+//   }
+//   intt1248_1024(M+2048, tmp);
+//   for (i=512, X=M+2048 ; i>0; i--) {
+//     T = barrett_16x2i(*X); *(X++) = T;
+//   }
+
+//   basemul_1248(tmp, r2, v1);
+//   basemul_1248(tmp2, s2, s1);
+//   for(X=tmp, Y=tmp2, i=624;i>0;--i){
+//       T = barrett_16x2i(__SADD16(*(Y++),*X));
+//       *(X++) = T;
+//   }
+//   intt1248_1024(M+2560, tmp);
+//   for (i=512, X=M+2560 ; i>0; i--) {
+//     T = barrett_16x2i(*X); *(X++) = T;
+//   }
+
+//   return(minusdelta);
+// }

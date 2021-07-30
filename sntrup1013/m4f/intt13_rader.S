@@ -20,7 +20,7 @@ wpad:
 
 @ [1, 2, 4, 8, 3, 6, 12, 11, 9, 5, 10, 7]
 @ [6, 3, 8, 4, 2, 1, 7, 10, 5, 9, 11, 12]
-.equ basesize, 192
+.equ basesize, 168
 .global intt13_rader
 .type intt13_rader, %function
 intt13_rader:

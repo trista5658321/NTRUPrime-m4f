@@ -1142,7 +1142,7 @@ static int Ciphertexts_diff_mask(const unsigned char *c,const unsigned char *c2)
   c2 = (unsigned char *)(void *) cc2;
   for (len &= 3; len > 0; len--)
     differentbits2 =__USADA8((*c++),(*c2++),differentbits2);
-  return ((-1)-((differentbits-1)>>31));
+  return ((-1)-((differentbits2-1)>>31));
 }
 
 /*************************************************

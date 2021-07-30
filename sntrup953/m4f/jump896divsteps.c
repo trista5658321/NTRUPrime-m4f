@@ -9,7 +9,7 @@ extern int jump128divsteps(int minusdelta, int *M, int *f, int *g);
 
 void gf_polymul_128x256(int *h, int *f, int *g);
 // void gf_polymul_384x512(int *h, int *f, int *g);
-void gf_polymul_512x512(int *h, int *f, int *g);
+void gf_polymul_512x512_1(int *h, int *f, int *g);
 void gf_polymul_128x128_2x2_x2p2_1 (int *V,int *M,int *fh,int *gh);
 void gf_polymul_384x384_2x2_x2p2_1 (int *V,int *M,int *fh,int *gh);
 void gf_polymul_128x256_2x2_x_2x2_onlyuv (int *M, int *M1, int *M2);
@@ -66,7 +66,7 @@ void gf_polymul_128x256(int *h, int *f, int *g){
 //   }
 // }
 
-void gf_polymul_512x512(int *h, int *f, int *g){
+void gf_polymul_512x512_1(int *h, int *f, int *g){
   int fpad[588], gpad[588];
   ntt1176_512(fpad, f);
   ntt1176_512(gpad, g);
@@ -149,15 +149,15 @@ void gf_polymul_384x512_2x2_x_2x2_onlyuv (int *M, int *M1, int *M2){ // M = M2*M
   int * BB753_1 = (int *)((void *)B753_1 + 2);
 
   B753_1[0] = 0;
-  gf_polymul_512x512(BB753_1, M2, M1); // x * u2 * u1 
-  gf_polymul_512x512(B753, M2+256, M1+512); // v2 * r1
+  gf_polymul_512x512_1(BB753_1, M2, M1); // x * u2 * u1 
+  gf_polymul_512x512_1(B753, M2+256, M1+512); // v2 * r1
   for (i=448, X=M, Y=B753_1, Z=B753; i>0; i--) {	// u = x u2 u1 + v2 r1
     T = barrett_16x2i(__SADD16((*Z++),*(Y++)));
     *(X++) = T;
   }
 
-  gf_polymul_512x512(BB753_1, M2, M1+256); // x * u2 * v1
-  gf_polymul_512x512(B753, M2+256, M1+768); // v2 * s1
+  gf_polymul_512x512_1(BB753_1, M2, M1+256); // x * u2 * v1
+  gf_polymul_512x512_1(B753, M2+256, M1+768); // v2 * s1
   for (i=448, X=M+480, Y=B753_1, Z=B753; i>0; i--) {	// v = x u2 v1 + v2 s1
     T = barrett_16x2i(__SADD16((*Z++),*(Y++)));
     *(X++) = T;

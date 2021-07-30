@@ -283,7 +283,7 @@ wpad:
     .word 5259
 @ [1, 2, 4, 8, 3, 6, 12, 11, 9, 5, 10, 7]
 @ [6, 3, 8, 4, 2, 1, 7, 10, 5, 9, 11, 12]
-.equ basesize, 8
+.equ basesize, 7
 .global ntt24
 .type ntt24, %function
 ntt24:
@@ -291,7 +291,8 @@ ntt24:
     adr.w lr, wpad
     ldm lr!, {r11-r12}
     vmov s0, s1, r0, lr
-    add.w r1, r0, #312*basesize*2
+    add.w r1, r0, #156*basesize*2
+    add.w r1, r1, #156*basesize*2
     vmov s2, r1
 butterfly3:
     vmov lr, s1
@@ -377,6 +378,16 @@ ntt2:
     str.w r4, [r0, #1*basesize*2]
     str.w r3, [r0], #4
 .endr
+    ldrh.w r1, [r0]
+    ldrh.w r2, [r0, #14]
+    smulbb r3, r9, r2
+    smmulr r4, r3, r11
+    mls r2, r4, r12, r3
+    sadd16 r3, r1, r2
+    ssub16 r4, r1, r2
+    strh.w r4, [r0, #14]
+    strh.w r3, [r0], #2
+
     add.w r0, r0, #1*basesize*2
     cmp.w r0, r10
     bne.w ntt2
